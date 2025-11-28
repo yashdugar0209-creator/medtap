@@ -1,276 +1,137 @@
+cat > public/index.html << 'EOF'
 <!doctype html>
-<html lang="en">
+<html>
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>MedTap — Dashboard</title>
-<meta name="description" content="MedTap patient & NFC dashboard" />
-<style>
-  :root{
-    --bg:#0f1724; --card:#0b1220; --muted:#9aa6b2; --accent:#00bfa6; --glass: rgba(255,255,255,0.03);
-    --radius:12px; font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-  }
-  html,body{height:100%;margin:0;background: linear-gradient(180deg,#071029 0%, var(--bg) 100%);color:#e6eef6}
-  .container{max-width:1100px;margin:28px auto;padding:20px;}
-  header{display:flex;align-items:center;gap:18px;margin-bottom:18px}
-  .brand{display:flex;align-items:center;gap:12px}
-  .logo{width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,#00bfa6,#007bff);display:flex;align-items:center;justify-content:center;font-weight:700;color:#022;box-shadow:0 6px 20px rgba(2,6,23,0.6)}
-  h1{font-size:20px;margin:0}
-  .sub{color:var(--muted);font-size:13px}
-  .grid{display:grid;grid-template-columns:1fr 360px;gap:18px}
-  .card{background:linear-gradient(180deg,var(--card), rgba(255,255,255,0.02));border-radius:var(--radius);padding:18px;box-shadow:0 6px 30px rgba(3,6,20,0.6)}
-  .actions{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
-  button{background:var(--glass);border:1px solid rgba(255,255,255,0.04);color:#e8f3f7;padding:10px 14px;border-radius:10px;cursor:pointer}
-  button.primary{background:linear-gradient(90deg,var(--accent),#007bff);border:none;color:#012;margin-left:auto}
-  input,select{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}
-  .small{font-size:13px;color:var(--muted)}
-  .list{margin-top:12px;display:flex;flex-direction:column;gap:8px}
-  .row{display:flex;align-items:center;gap:12px;padding:10px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.015));border:1px solid rgba(255,255,255,0.02)}
-  .muted{color:var(--muted)}
-  .pill{background:rgba(255,255,255,0.03);padding:6px 10px;border-radius:999px;font-weight:600}
-  .center{display:flex;align-items:center;justify-content:center}
-  footer{margin-top:18px;color:var(--muted);font-size:13px;text-align:center}
-  /* responsive */
-  @media (max-width:920px){
-    .grid{grid-template-columns:1fr; }
-    .brand h1{font-size:18px}
-  }
-</style>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>MedTap Dashboard</title>
+  <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
 <div class="container">
-  <header>
-    <div class="brand">
+  <div class="header">
       <div class="logo">MT</div>
-      <div>
+      <div class="title">
         <h1>MedTap</h1>
-        <div class="sub">NFC medical card • Patient dashboard</div>
+        <p class="small">NFC Medical Card • Smart Health Dashboard</p>
       </div>
-    </div>
 
-    <div style="margin-left:auto;display:flex;gap:10px;align-items:center">
-      <input id="tokenInput" placeholder="Paste access token (optional)" style="max-width:360px" />
-      <button id="saveTokenBtn">Save token</button>
-    </div>
-  </header>
+      <div class="toolbar">
+        <input id="tokenInput" placeholder="Paste Token"/>
+        <button class="btn" id="saveToken">Save</button>
+        <button class="btn primary" id="createPatientBtn">New Patient</button>
+      </div>
+  </div>
 
   <div class="grid">
-    <!-- main column -->
     <main>
       <div class="card">
-        <div style="display:flex;gap:12px;align-items:center">
-          <div>
-            <strong style="font-size:16px">Quick actions</strong>
-            <div class="small muted">Search patients, scan NFC or upload records</div>
-          </div>
-          <div style="margin-left:auto" class="small muted">Server: <span id="srvStatus">unknown</span></div>
-        </div>
+        <strong>Quick Actions</strong>
+        <div class="small">Search patient, NFC scan, view records</div>
 
-        <hr style="margin:12px 0;border-color:rgba(255,255,255,0.02)"/>
-
-        <div class="actions">
-          <input id="q" placeholder="Search by name / phone / email" />
-          <button id="searchBtn">Search</button>
-          <button id="nfcBtn">Simulate NFC</button>
-          <button class="primary" id="newPatient">New Patient</button>
+        <div class="searchbar" style="margin-top:10px;">
+          <input id="searchQuery" placeholder="Search name / email / phone">
+          <button class="btn" id="searchBtn">Search</button>
+          <button class="btn" id="nfcSim">Sim NFC</button>
         </div>
 
         <div id="results" class="list"></div>
       </div>
 
-      <div style="height:14px"></div>
+      <div style="height:20px"></div>
 
       <div class="card">
         <strong>Latest Records</strong>
-        <div class="small muted">Recent uploads and medical notes</div>
+        <div class="small">Recently added medical reports</div>
+
         <div id="records" class="list"></div>
       </div>
     </main>
 
-    <!-- right column -->
     <aside>
       <div class="card">
-        <div style="display:flex;align-items:center;gap:12px">
-          <div><strong>Active Patient</strong><div class="small muted">Details & actions</div></div>
-          <div style="margin-left:auto"><span class="pill" id="activeStatus">None</span></div>
-        </div>
+        <strong>Active Patient</strong>
+        <div id="activePatient" class="small" style="margin-top:10px;">None Selected</div>
 
-        <div id="activeCard" style="margin-top:12px">
-          <div class="muted">No patient selected</div>
-        </div>
+        <hr style="margin-top:12px;margin-bottom:12px;border:1px solid rgba(255,255,255,0.05);"/>
 
-        <hr style="margin:12px 0;border-color:rgba(255,255,255,0.02)"/>
-
-        <div class="small muted">Quick links</div>
-        <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
-          <button id="openAdmin">Open Admin Panel</button>
-          <button id="logoutBtn">Clear token</button>
-        </div>
+        <button class="btn" onclick="window.location='admin.html'">Admin Panel</button>
+        <button class="btn" onclick="window.location='hospital.html'">Hospital Intake</button>
       </div>
     </aside>
   </div>
-
-  <footer>MedTap • Demo UI — replace API endpoints in script below to match your backend</footer>
 </div>
 
 <script>
-/* Small client JS to power the page - adjust endpoints if different */
-const state = { token: localStorage.getItem('medtap_token') || '' };
+// SIMPLE FRONTEND JS
+
+const apiBase = window.location.origin + "/api";
 const el = id => document.getElementById(id);
-const apiBase = window.location.origin + '/api'; // will proxy through nginx or direct if same host
+let token = localStorage.getItem("medtap_token") || "";
 
-function setSrvStatus(text){ el('srvStatus').textContent = text; }
-function setActive(patient){
-  if(!patient){ el('activeCard').innerHTML = '<div class="muted">No patient selected</div>'; el('activeStatus').textContent='None'; return; }
-  el('activeStatus').textContent = patient.name || patient._id || 'Patient';
-  el('activeCard').innerHTML = `<div style="display:flex;flex-direction:column;gap:6px">
-    <div><strong>${escapeHtml(patient.name||'—')}</strong></div>
-    <div class="small muted">ID: ${escapeHtml(patient._id||'—')}</div>
-    <div class="small muted">Phone: ${escapeHtml(patient.phone||'—')}</div>
-    <div style="margin-top:8px"><button id="viewRecords">View records</button> <button id="message">Message</button></div>
-  </div>`;
-  document.getElementById('viewRecords').onclick = () => fetchRecords(patient._id);
-}
+el("saveToken").onclick = () => {
+  token = el("tokenInput").value;
+  localStorage.setItem("medtap_token", token);
+  alert("Token Saved");
+};
 
-/* small helper */
-function escapeHtml(s){ return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-
-async function request(path, opts = {}){
-  const headers = opts.headers || {};
-  if(state.token) headers['Authorization'] = 'Bearer ' + state.token;
-  headers['Content-Type'] = headers['Content-Type'] || 'application/json';
-  const res = await fetch(apiBase + path, {...opts, headers, credentials: 'include'}).catch(e=>{
-    throw new Error('Network error: '+e.message);
+async function api(path){
+  const res = await fetch(apiBase + path, {
+    headers: token ? { "Authorization": "Bearer " + token } : {}
   });
-  if(!res.ok){
-    const txt = await res.text().catch(()=>res.statusText);
-    throw new Error(res.status + ' — ' + txt);
-  }
-  // if download or non-json, try text
-  const ct = res.headers.get('content-type') || '';
-  if(ct.includes('application/json')) return res.json();
-  return res.text();
+  return res.json().catch(()=>null);
 }
 
-/* actions */
-el('saveTokenBtn').onclick = ()=> {
-  state.token = el('tokenInput').value.trim();
-  localStorage.setItem('medtap_token', state.token);
-  setSrvStatus(state.token? 'auth set' : 'no auth');
-  alert('Token saved (in localStorage)');
+el("searchBtn").onclick = async () => {
+  const q = el("searchQuery").value;
+  if(!q) return alert("Enter search query");
+
+  const data = await api("/users?query=" + encodeURIComponent(q));
+  renderPatients(data || []);
 };
 
-el('logoutBtn').onclick = ()=> {
-  state.token = '';
-  localStorage.removeItem('medtap_token');
-  setSrvStatus('no auth');
-  alert('Token cleared');
-};
-
-el('searchBtn').onclick = async ()=>{
-  const q = el('q').value.trim();
-  if(!q){ alert('Enter a name or phone to search'); return; }
-  el('results').innerHTML = '<div class="muted">Searching…</div>';
-  try{
-    // example API: GET /api/users?query=<q> (adjust on server)
-    const data = await request('/users?query=' + encodeURIComponent(q));
-    renderSearchResults(data);
-  }catch(err){
-    el('results').innerHTML = `<div class="muted">Error: ${escapeHtml(err.message)}</div>`;
-  }
-};
-
-el('nfcBtn').onclick = async ()=>{
-  // simulate reading an NFC tag — in real app use WebNFC or mobile helper
-  const tag = prompt('Simulate NFC tag id (e.g. TAG123)');
+el("nfcSim").onclick = async () => {
+  const tag = prompt("Enter NFC Tag ID:");
   if(!tag) return;
-  el('results').innerHTML = '<div class="muted">Looking up tag…</div>';
-  try{
-    const data = await request('/nfc/' + encodeURIComponent(tag));
-    if(!data) { el('results').innerHTML = '<div class="muted">No mapping for tag</div>'; return; }
-    setActive(data.patient || data);
-    el('results').innerHTML = `<div class="row"><div><strong>Found</strong> ${escapeHtml(data.patient?.name || data.name || '—')}</div></div>`;
-  }catch(err){
-    el('results').innerHTML = `<div class="muted">Error: ${escapeHtml(err.message)}</div>`;
-  }
+
+  const data = await api("/nfc/" + encodeURIComponent(tag));
+  if(data) renderActive(data.patient || data);
 };
 
-el('newPatient').onclick = ()=> {
-  const nm = prompt('New patient name');
-  if(!nm) return;
-  // This sample doesn't create patient on backend; implement POST /api/users to create
-  alert('To create a patient, call POST /api/users with body {name:"'+nm+'"} — backend must support it.');
-};
-
-el('openAdmin').onclick = ()=> {
-  // assumes admin panel is at /admin.html
-  window.open('./admin.html', '_blank');
-};
-
-/* initial load — fetch recent records and ping server */
-async function init(){
-  el('tokenInput').value = state.token || '';
-  setSrvStatus('checking');
-  try{
-    // simple ping: GET /api/health or GET /api/users/me
-    try{
-      await request('/health');
-      setSrvStatus('ok');
-    }catch(e){
-      // fallback to users/me
-      await request('/users/me');
-      setSrvStatus('ok (auth)');
-    }
-  }catch(err){
-    setSrvStatus('unreachable');
-  }
-
-  try{
-    const recs = await request('/records'); // expects array
-    renderRecords(recs);
-  }catch(e){
-    document.getElementById('records').innerHTML = '<div class="muted">Could not load records: '+escapeHtml(e.message)+'</div>';
-  }
-}
-
-function renderSearchResults(list){
-  if(!list || list.length===0){ el('results').innerHTML = '<div class="muted">No results</div>'; return; }
-  el('results').innerHTML = '';
+function renderPatients(list){
+  const box = el("results");
+  box.innerHTML = "";
   list.forEach(p=>{
-    const node = document.createElement('div');
-    node.className = 'row';
-    node.innerHTML = `<div style="flex:1"><strong>${escapeHtml(p.name||p.fullName||'Unnamed')}</strong><div class="small muted">${escapeHtml(p.email||p.phone||'')}</div></div>
-      <div style="display:flex;gap:8px"><button class="view">Select</button></div>`;
-    node.querySelector('.view').onclick = ()=> setActive(p);
-    el('results').appendChild(node);
+    const r = document.createElement("div");
+    r.className = "row";
+    r.innerHTML = `<div><strong>${p.name||"Unknown"}</strong><div class='small'>${p.phone||""}</div></div>
+    <button class='btn'>Select</button>`;
+    r.querySelector("button").onclick = () => renderActive(p);
+    box.appendChild(r);
   });
 }
 
-function renderRecords(list){
-  const out = el('records');
-  out.innerHTML = '';
-  if(!list || list.length===0){ out.innerHTML = '<div class="muted">No recent records</div>'; return; }
-  list.slice(0,10).forEach(r=>{
-    const node = document.createElement('div');
-    node.className = 'row';
-    node.innerHTML = `<div style="flex:1"><strong>${escapeHtml(r.title||r.type||'Record')}</strong><div class="small muted">${escapeHtml((new Date(r.createdAt||r.date||Date.now())).toLocaleString())}</div></div>
-      <div><button onclick="downloadRecord('${escapeHtml(r._id||r.id||'')}')">Open</button></div>`;
-    out.appendChild(node);
+function renderActive(p){
+  el("activePatient").innerHTML = `
+    <div><strong>${p.name}</strong></div>
+    <div class="small">Phone: ${p.phone}</div>
+    <div class="small">Email: ${p.email||""}</div>
+  `;
+}
+
+// load latest records
+api("/records").then(list=>{
+  const box = el("records");
+  if(!list) return;
+  list.forEach(r=>{
+    const row = document.createElement("div");
+    row.className = "row";
+    row.innerHTML = `<div><strong>${r.title||"Record"}</strong>
+                     <div class="small">${new Date(r.createdAt).toLocaleString()}</div></div>`;
+    box.appendChild(row);
   });
-}
-
-function downloadRecord(id){
-  if(!id){ alert('No record id'); return; }
-  const url = apiBase + '/records/' + encodeURIComponent(id);
-  // open in new tab with token included? We use Authorization header by fetch; for direct link we can create a small fetch + blob
-  fetch(url, {headers: state.token? {'Authorization':'Bearer '+state.token} : {}, credentials:'include'}).then(r=>r.blob()).then(blob=>{
-    const u = URL.createObjectURL(blob);
-    window.open(u, '_blank');
-  }).catch(e=> alert('Error: '+e.message));
-}
-
-/* start */
-init();
+});
 </script>
 </body>
 </html>
+EOF
