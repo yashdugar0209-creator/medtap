@@ -1,0 +1,61 @@
+cat > public/admin.html << 'EOF'
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>MedTap Admin</title>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+      <div class="logo">MT</div>
+      <div class="title">
+        <h1>Admin Control</h1>
+        <p class="small">Manage users, hospitals, NFC tags</p>
+      </div>
+  </div>
+
+  <div class="card">
+    <strong>Search</strong>
+    <input id="adminSearch" placeholder="Search user / hospital" style="margin-top:10px;">
+    <button class="btn" id="adminBtn" style="margin-top:10px;">Search</button>
+    <div id="adminResults" class="list"></div>
+  </div>
+
+  <div style="height:20px"></div>
+
+  <div class="card">
+    <strong>NFC Tag Mapping</strong>
+    <div class="small">Map NFC → Patient</div>
+
+    <div style="display:flex;gap:10px;margin-top:10px;">
+      <input id="nfcTag" placeholder="NFC Tag">
+      <input id="nfcPatient" placeholder="Patient ID">
+      <button class="btn primary" id="mapBtn">Map</button>
+    </div>
+
+    <div id="mapStatus" class="small" style="margin-top:10px;"></div>
+  </div>
+</div>
+
+<script>
+const apiBase = window.location.origin + "/api";
+
+document.getElementById("mapBtn").onclick = async () => {
+  const tag = document.getElementById("nfcTag").value;
+  const pid = document.getElementById("nfcPatient").value;
+
+  const res = await fetch(apiBase + "/admin/map", {
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify({tag, patientId:pid})
+  });
+
+  document.getElementById("mapStatus").innerText = res.ok ? "Mapped" : "Error";
+};
+</script>
+</body>
+</html>
+EOF
