@@ -1,0 +1,135 @@
+<!doctype html>
+<html>
+<head>
+<title>Admin Dashboard – MedTap</title>
+<link rel="stylesheet" href="/assets/style.css">
+
+<style>
+.card{padding:20px;margin-bottom:20px;border-radius:14px;background:white;box-shadow:0 4px 18px rgba(0,0,0,0.06);}
+.btn-small{padding:6px 10px;border-radius:8px;font-size:14px;border:none;cursor:pointer;}
+.btn-approve{background:#28a745;color:white;}
+.btn-reject{background:#ff3b30;color:white;margin-left:8px;}
+.section-title{margin-top:30px;}
+</style>
+
+</head>
+<body>
+
+<div class="navbar">
+ <div class="logo">MedTap Admin Dashboard</div>
+ <div class="nav-links"><a href="/admin_login.html" style="color:#ff3b30;">Logout</a></div>
+</div>
+
+<div class="container">
+
+ <h1>Pending Approvals</h1>
+
+ <!-- PATIENT REQUESTS -->
+ <h2 class="section-title">Patients</h2>
+ <div id="patientBox"></div>
+
+ <!-- DOCTOR REQUESTS -->
+ <h2 class="section-title">Doctors</h2>
+ <div id="doctorBox"></div>
+
+ <!-- HOSPITAL REQUESTS -->
+ <h2 class="section-title">Hospitals</h2>
+ <div id="hospitalBox"></div>
+
+</div>
+
+<script>
+function loadData(){
+  loadPatients();
+  loadDoctors();
+  loadHospitals();
+}
+
+function loadPatients(){
+  const box = document.getElementById("patientBox");
+  const data = JSON.parse(localStorage.getItem("patient_requests") || "[]");
+
+  box.innerHTML = "";
+
+  data.forEach((p,i)=>{
+    if(!p.approved){
+      box.innerHTML += `
+      <div class="card">
+        <strong>${p.email}</strong><br>
+        Mobile: ${p.mobile}<br>
+        Address: ${p.address}<br><br>
+
+        <button class="btn-small btn-approve" onclick="approve('patient',${i})">Approve</button>
+        <button class="btn-small btn-reject" onclick="reject('patient',${i})">Reject</button>
+      </div>`;
+    }
+  });
+}
+
+function loadDoctors(){
+  const box = document.getElementById("doctorBox");
+  const data = JSON.parse(localStorage.getItem("doctor_requests") || "[]");
+
+  box.innerHTML = "";
+
+  data.forEach((d,i)=>{
+    if(!d.approved){
+      box.innerHTML += `
+      <div class="card">
+        <strong>${d.name} (${d.special})</strong><br>
+        Reg No: ${d.regno}<br>
+        Mobile: ${d.mobile}<br><br>
+
+        <button class="btn-small btn-approve" onclick="approve('doctor',${i})">Approve</button>
+        <button class="btn-small btn-reject" onclick="reject('doctor',${i})">Reject</button>
+      </div>`;
+    }
+  });
+}
+
+function loadHospitals(){
+  const box = document.getElementById("hospitalBox");
+  const data = JSON.parse(localStorage.getItem("hospital_requests") || "[]");
+
+  box.innerHTML = "";
+
+  data.forEach((h,i)=>{
+    if(!h.approved){
+      box.innerHTML += `
+      <div class="card">
+        <strong>${h.hname}</strong><br>
+        Admin: ${h.adminname}<br>
+        Mobile: ${h.mobile}<br><br>
+
+        <button class="btn-small btn-approve" onclick="approve('hospital',${i})">Approve</button>
+        <button class="btn-small btn-reject" onclick="reject('hospital',${i})">Reject</button>
+      </div>`;
+    }
+  });
+}
+
+function approve(type,i){
+  let key = type + "_requests";
+  let data = JSON.parse(localStorage.getItem(key) || "[]");
+
+  data[i].approved = true;
+
+  localStorage.setItem(key, JSON.stringify(data));
+  loadData();
+}
+
+function reject(type,i){
+  let key = type + "_requests";
+  let data = JSON.parse(localStorage.getItem(key) || "[]");
+
+  data.splice(i,1);
+
+  localStorage.setItem(key, JSON.stringify(data));
+  loadData();
+}
+
+window.onload = loadData;
+</script>
+
+</body>
+</html>

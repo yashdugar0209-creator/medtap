@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head>
+<title>Admin Login – MedTap</title>
+<link rel="stylesheet" href="/assets/style.css">
+
+<style>
+.error{color:red;margin-top:12px;display:none;text-align:center;}
+</style>
+</head>
+
+<body>
+
+<div class="container center">
+  <h1>Admin Login</h1>
+
+  <div class="card" style="max-width:380px;">
+    <form onsubmit="return loginAdmin(event)">
+      <label>Email</label>
+      <input id="email" type="email" required>
+
+      <label>Password</label>
+      <input id="password" type="password" required>
+
+      <button class="btn-primary" style="width:100%">Login</button>
+
+      <p id="err" class="error">Invalid credentials</p>
+    </form>
+  </div>
+</div>
+
+<script>
+function loginAdmin(event){
+  event.preventDefault();
+
+  let admins = JSON.parse(localStorage.getItem("admins") || "[]");
+  const email = document.getElementById("email").value;
+  const pass = document.getElementById("password").value;
+
+  const admin = admins.find(a => a.email===email && a.password===pass);
+
+  if(admin){
+    window.location.href = "/admin_dashboard.html";
+  }else{
+    document.getElementById("err").style.display="block";
+  }
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Doctor Registration – MedTap</title>
+
+<link rel="stylesheet" href="/assets/style.css">
+<script src="/assets/otp.js"></script>
+
+<style>
+  .form-card {max-width:650px;margin:40px auto;background:white;padding:30px;border-radius:18px;
+     box-shadow:0 4px 22px rgba(0,0,0,0.08);}
+  .input-row {margin-bottom:15px;}
+  .otp-row {display:flex;gap:10px;}
+  .otp-btn {background:#007aff;color:white;padding:10px 14px;border:none;border-radius:10px;cursor:pointer;}
+  .otp-btn:hover {background:#005bbb;}
+  .status-text {font-size:14px;margin-top:6px;}
+</style>
+</head>
+
+<body>
+
+<div class="navbar">
+  <div class="logo">MedTap — Doctor</div>
+  <div class="nav-links"><a href="/login.html">Back</a></div>
+</div>
+
+<div class="form-card">
+  <h1>Doctor Registration</h1>
+
+  <form onsubmit="return registerDoctor(event)">
+
+    <div class="input-row">
+      <label>Full Name</label>
+      <input id="name" type="text" required>
+    </div>
+
+    <div class="input-row">
+      <label>Specialization</label>
+      <input id="special" type="text" placeholder="Cardiologist / GP / Dentist" required>
+    </div>
+
+    <div class="input-row">
+      <label>Mobile Number</label>
+      <div class="otp-row">
+        <input id="mobile" type="text" placeholder="10-digit mobile" required>
+        <button class="otp-btn" type="button" onclick="sendOTP('mobile','otpStatus')">Send OTP</button>
+      </div>
+      <p id="otpStatus" class="status-text"></p>
+    </div>
+
+    <div class="input-row">
+      <label>Enter OTP</label>
+      <input id="otpInput" type="text" required>
+    </div>
+
+    <div class="input-row">
+      <label>Email</label>
+      <input id="email" type="email" required>
+    </div>
+
+    <div class="input-row">
+      <label>Password</label>
+      <input id="password" type="password" required>
+    </div>
+
+    <div class="input-row">
+      <label>Registration Number (e.g. MCI No.)</label>
+      <input id="regno" type="text" required>
+    </div>
+
+    <button class="btn-primary">Submit for Approval</button>
+
+  </form>
+</div>
+
+<script>
+function registerDoctor(event){
+  event.preventDefault();
+
+  if(!verifyOTP('otpInput','otpStatus')){
+      alert("OTP verification failed");
+      return false;
+  }
+
+  let queue = JSON.parse(localStorage.getItem("doctor_requests") || "[]");
+
+  queue.push({
+      name: document.getElementById("name").value,
+      special: document.getElementById("special").value,
+      mobile: document.getElementById("mobile").value,
+      email: document.getElementById("email").value,
+      regno: document.getElementById("regno").value,
+      password: document.getElementById("password").value,
+      approved: false
+  });
+
+  localStorage.setItem("doctor_requests", JSON.stringify(queue));
+
+  alert("Doctor registration sent for admin approval.");
+  window.location.href = "/login.html";
+}
+</script>
+
+</body>
+</html>

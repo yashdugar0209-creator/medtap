@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MedTap — Patient Dashboard</title>
+    <link rel="stylesheet" href="/assets/style.css">
+
+    <style>
+        /* Same UI theme used in hospital.html */
+
+        .navbar {
+            padding: 18px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8f9fb;
+            border-bottom: 1px solid #e6e6e6;
+        }
+
+        .nav-links a {
+            margin-left: 18px;
+            font-size: 16px;
+            color: #007aff;
+            text-decoration: none;
+        }
+
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+
+        .page-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding: 30px 0;
+        }
+
+        .dashboard-card {
+            width: 100%;
+            max-width: 900px;
+            background: #fff;
+            padding: 30px;
+            border-radius: 18px;
+            box-shadow: 0 4px 22px rgba(0,0,0,0.06);
+        }
+
+        h1, h2 {
+            margin-bottom: 20px;
+        }
+
+        .section {
+            margin-top: 30px;
+        }
+
+        .info-box {
+            background: #f4f6f9;
+            padding: 14px 20px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+
+        .btn-primary {
+            background: #007aff;
+            color: #fff;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .btn-primary:hover {
+            background: #005bbb;
+        }
+
+        .btn-secondary {
+            background: #e8e8e8;
+            padding: 10px 16px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        /* token box */
+        .token-box {
+            display: flex;
+            align-items: center;
+            border: 1px solid #dcdcdc;
+            border-radius: 12px;
+            padding: 10px 16px;
+            background: #fff;
+            font-size: 16px;
+            margin-bottom: 18px;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <div style="font-size:28px;font-weight:700;">MedTap — Patient</div>
+
+        <div class="nav-links">
+            <a href="/patient.html">Dashboard</a>
+            <a href="/patient_documents.html">Documents</a>
+            <a href="/patient_prescriptions.html">Prescriptions</a>
+            <a href="/patient_profile.html">Profile</a>
+            <a href="/login.html" style="color:#ff3b30;">Logout</a>
+        </div>
+    </div>
+
+    <!-- MAIN BODY -->
+    <div class="page-container">
+        <div class="dashboard-card">
+
+            <h1>Welcome, Patient</h1>
+            <p>Your personal medical dashboard.</p>
+
+            <!-- TOKEN -->
+            <h2>Your NFC Token</h2>
+            <div class="token-box">
+                MT445672
+            </div>
+
+            <!-- PROFILE SECTION -->
+            <div class="section">
+                <h2>Your Profile</h2>
+
+                <div class="info-box"><strong>Name:</strong> John Doe</div>
+                <div class="info-box"><strong>DOB:</strong> 1996-07-12</div>
+                <div class="info-box"><strong>Phone:</strong> 9876543210</div>
+                <div class="info-box"><strong>Blood Group:</strong> B+</div>
+                <div class="info-box"><strong>Aadhaar:</strong> 8899 1122 3344</div>
+                <div class="info-box"><strong>Insurance:</strong> Aditya Birla Health</div>
+            </div>
+
+            <!-- DOCUMENTS -->
+            <div class="section">
+                <h2>Your Medical Documents</h2>
+
+                <button class="btn-primary" onclick="window.location='/patient_documents.html'">
+                    View Documents
+                </button>
+            </div>
+
+            <!-- PRESCRIPTIONS -->
+            <div class="section">
+                <h2>Your Prescriptions</h2>
+
+                <button class="btn-primary" onclick="window.location='/patient_prescriptions.html'">
+                    View Prescriptions
+                </button>
+            </div>
+
+            <!-- VISIT HISTORY -->
+            <div class="section">
+                <h2>Visit History</h2>
+
+                <div class="info-box">
+                    <strong>22 Feb 2025 –</strong> General Checkup  
+                    <br>Doctor: Dr. R. Nair
+                </div>
+
+                <div class="info-box">
+                    <strong>05 Jan 2025 –</strong> Chest Infection Diagnosis  
+                    <br>Doctor: Dr. Pooja Shah
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>

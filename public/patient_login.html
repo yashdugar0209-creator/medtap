@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Patient Login – MedTap</title>
+  <link rel="stylesheet" href="/assets/style.css">
+
+  <style>
+    .error { color:#ff3b30; text-align:center; margin-top:10px; display:none; }
+  </style>
+</head>
+
+<body>
+
+<div class="container center">
+  <h1>Patient Login</h1>
+
+  <div class="card" style="max-width:380px;">
+    <form onsubmit="return patientLogin(event)">
+      
+      <label>Email or Token</label>
+      <input id="email" type="text" required placeholder="your email / token">
+
+      <label>Password</label>
+      <input id="password" type="password" required placeholder="******">
+
+      <button class="btn-primary" style="margin-top:10px;width:100%;">
+        Login
+      </button>
+
+      <p id="err" class="error">Invalid login</p>
+      <p id="pending" class="error" style="color:orange;">Your account is pending admin approval</p>
+    </form>
+
+    <p style="text-align:center;margin-top:10px;">
+      <a href="/patient_register.html">Create account</a>
+    </p>
+  </div>
+</div>
+
+<script>
+function patientLogin(event){
+    event.preventDefault();
+
+    const email = document.getElementById("email").value.trim();
+    const pass = document.getElementById("password").value.trim();
+
+    let req = JSON.parse(localStorage.getItem("patient_requests") || "[]");
+
+    const user = req.find(p => 
+        (p.email === email || p.mobile === email || p.token === email) &&
+        p.password === pass
+    );
+
+    if(!user){
+        document.getElementById("err").style.display = "block";
+        document.getElementById("pending").style.display = "none";
+        return false;
+    }
+
+    if(!user.approved){
+        document.getElementById("pending").style.display = "block";
+        document.getElementById("err").style.display = "none";
+        return false;
+    }
+
+    // SUCCESS
+    localStorage.setItem("logged_patient", JSON.stringify(user));
+    window.location.href = "/patient.html";
+}
+</script>
+
+</body>
+</html>
