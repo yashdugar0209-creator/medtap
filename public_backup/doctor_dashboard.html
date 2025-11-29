@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Doctor Dashboard – MedTap</title>
+  <link rel="stylesheet" href="/assets/style.css">
+  <style>
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit,minmax(200px,1fr));
+        gap: 18px;
+      }
+      .stat-card{
+        background:#fff;
+        padding:20px;
+        border-radius:16px;
+        box-shadow:0 4px 20px rgba(0,0,0,0.06);
+      }
+      .chart-box{
+        height:220px;
+        background:#f4f6f9;
+        border-radius:14px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        color:#7b7b7b;
+        font-size:14px;
+      }
+  </style>
+</head>
+
+<body>
+
+<div class="navbar">
+  <div class="logo">MedTap — Doctor</div>
+  <div class="nav-links">
+    <a href="/doctor_dashboard.html" class="active">Dashboard</a>
+    <a href="/doctor_patient_search.html">Search Patient</a>
+    <a href="/doctor_profile.html">Profile</a>
+    <a href="/login.html" style="color:#ff3b30;">Logout</a>
+  </div>
+</div>
+
+<div class="container">
+  <h1>Doctor Dashboard</h1>
+
+  <!-- STATS -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <h2>Today’s Patients</h2>
+      <p class="small">14</p>
+    </div>
+
+    <div class="stat-card">
+      <h2>Prescriptions Today</h2>
+      <p class="small">9</p>
+    </div>
+
+    <div class="stat-card">
+      <h2>Pending Follow-ups</h2>
+      <p class="small">5</p>
+    </div>
+
+    <div class="stat-card">
+      <h2>Unread Notifications</h2>
+      <p class="small">3</p>
+    </div>
+  </div>
+
+  <!-- CHARTS -->
+  <h2 style="margin-top:30px;">Weekly Overview</h2>
+  <div class="card">
+    <div class="chart-box">[Weekly Patient Chart Placeholder]</div>
+  </div>
+
+  <!-- RECENT PATIENTS -->
+  <h2>Recently Viewed Patients</h2>
+  <div class="card">
+    <table class="table">
+      <tr>
+        <th>Name</th>
+        <th>Last Visit</th>
+        <th>Token</th>
+        <th>Action</th>
+      </tr>
+
+      <tr>
+        <td>Rahul Patel</td>
+        <td>15 Feb 2025</td>
+        <td>MT445672</td>
+        <td><a class="btn-secondary" href="/doctor_patient_profile.html">View</a></td>
+      </tr>
+
+      <tr>
+        <td>Aarti Sharma</td>
+        <td>20 Feb 2025</td>
+        <td>MT219900</td>
+        <td><a class="btn-secondary" href="/doctor_patient_profile.html">View</a></td>
+      </tr>
+    </table>
+  </div>
+
+</div>
+
+</body>
+</html>

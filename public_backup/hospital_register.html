@@ -1,0 +1,106 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Hospital Registration – MedTap</title>
+
+<link rel="stylesheet" href="/assets/style.css">
+<script src="/assets/otp.js"></script>
+
+<style>
+.form-card{max-width:700px;margin:40px auto;background:white;padding:30px;border-radius:18px;
+box-shadow:0 4px 22px rgba(0,0,0,0.08);}
+.input-row{margin-bottom:15px;}
+.otp-row{display:flex;gap:10px;}
+.otp-btn{background:#007aff;color:white;padding:10px 14px;border:none;border-radius:10px;cursor:pointer;}
+.otp-btn:hover{background:#005bbb;}
+.status-text{font-size:14px;margin-top:6px;}
+</style>
+</head>
+
+<body>
+
+<div class="navbar">
+  <div class="logo">MedTap — Hospital</div>
+  <div class="nav-links"><a href="/login.html">Back</a></div>
+</div>
+
+<div class="form-card">
+  <h1>Hospital Registration</h1>
+
+  <form onsubmit="return registerHospital(event)">
+
+    <div class="input-row">
+      <label>Hospital Name</label>
+      <input id="hname" type="text" required>
+    </div>
+
+    <div class="input-row">
+      <label>Admin Name</label>
+      <input id="adminname" type="text" required>
+    </div>
+
+    <div class="input-row">
+      <label>Mobile Number</label>
+      <div class="otp-row">
+        <input id="mobile" type="text" required>
+        <button class="otp-btn" type="button" onclick="sendOTP('mobile','otpStatus')">Send OTP</button>
+      </div>
+      <p id="otpStatus" class="status-text"></p>
+    </div>
+
+    <div class="input-row">
+      <label>Enter OTP</label>
+      <input id="otpInput" type="text" required>
+    </div>
+
+    <div class="input-row">
+      <label>Email</label>
+      <input id="email" type="email" required>
+    </div>
+
+    <div class="input-row">
+      <label>Password</label>
+      <input id="password" type="password" required>
+    </div>
+
+    <div class="input-row">
+      <label>Address</label>
+      <input id="address" type="text" required>
+    </div>
+
+    <button class="btn-primary">Submit for Approval</button>
+
+  </form>
+</div>
+
+<script>
+function registerHospital(event){
+  event.preventDefault();
+
+  if(!verifyOTP('otpInput','otpStatus')){
+    alert("OTP verification failed");
+    return false;
+  }
+
+  let queue = JSON.parse(localStorage.getItem("hospital_requests") || "[]");
+
+  queue.push({
+    hname: document.getElementById("hname").value,
+    adminname: document.getElementById("adminname").value,
+    mobile: document.getElementById("mobile").value,
+    email: document.getElementById("email").value,
+    address: document.getElementById("address").value,
+    password: document.getElementById("password").value,
+    approved: false
+  });
+
+  localStorage.setItem("hospital_requests", JSON.stringify(queue));
+
+  alert("Hospital registration sent for approval.");
+  window.location.href = "/login.html";
+}
+</script>
+
+</body>
+</html>

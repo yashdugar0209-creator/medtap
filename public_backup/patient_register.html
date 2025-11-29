@@ -1,0 +1,131 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Patient Register</title>
+
+<link rel="stylesheet" href="/assets/style.css">
+<script src="/assets/otp.js"></script>
+
+<style>
+  .input-row {
+    margin-bottom: 15px;
+  }
+  .otp-row {
+    display: flex;
+    gap: 10px;
+  }
+  .otp-btn {
+    background:#007aff;
+    color:white;
+    padding:10px 14px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    min-width:120px;
+  }
+  .otp-btn:hover {
+    background:#005bbb;
+  }
+  .status-text {
+    font-size:14px;
+    margin-top:6px;
+  }
+</style>
+
+</head>
+<body>
+
+<div class="header">
+  <div class="brand">
+    <h1>MedTap</h1>
+  </div>
+</div>
+
+<div class="container">
+  <div class="card" style="max-width:480px;margin:auto">
+
+    <h2>Create Patient Account</h2>
+
+    <form onsubmit="return registerPatient(event)">
+
+      <!-- EMAIL -->
+      <div class="input-row">
+        <label>Email</label>
+        <input id="email" name="email" type="email" required>
+      </div>
+
+      <!-- PASSWORD -->
+      <div class="input-row">
+        <label>Password</label>
+        <input id="password" name="password" type="password" required>
+      </div>
+
+      <!-- MOBILE -->
+      <div class="input-row">
+        <label>Mobile Number</label>
+        <div class="otp-row">
+          <input id="mobile" type="text" placeholder="10-digit mobile" required>
+          <button type="button" class="otp-btn"
+            onclick="sendOTP('mobile','otpStatus')">Send OTP</button>
+        </div>
+        <p id="otpStatus" class="status-text"></p>
+      </div>
+
+      <!-- ENTER OTP -->
+      <div class="input-row">
+        <label>Enter OTP</label>
+        <input id="otpInput" type="text" required>
+      </div>
+
+      <!-- ADDRESS -->
+      <div class="input-row">
+        <label>Address</label>
+        <input id="address" type="text">
+      </div>
+
+      <div style="margin-top:10px">
+        <button class="btn" type="submit">Create account</button>
+      </div>
+    </form>
+
+    <p class="small" style="margin-top:12px">
+      <a href="/patient_login.html">Already have an account? Login</a>
+    </p>
+
+  </div>
+</div>
+
+<script>
+// Registration + admin approval simulation
+function registerPatient(event) {
+    event.preventDefault();
+
+    const verified = verifyOTP('otpInput','otpStatus');
+    if (!verified) {
+        alert("OTP verification failed");
+        return false;
+    }
+
+    // Store registration for admin approval
+    let queue = JSON.parse(localStorage.getItem("patient_requests") || "[]");
+
+    queue.push({
+        email: document.getElementById("email").value,
+        password: document.getElementById("password").value,
+        mobile: document.getElementById("mobile").value,
+        address: document.getElementById("address").value,
+        approved: false
+    });
+
+    localStorage.setItem("patient_requests", JSON.stringify(queue));
+
+    alert("Registration sent for approval! Admin will verify your account.");
+    window.location.href = "/login.html";
+}
+</script>
+
+</body>
+</html>
+ 

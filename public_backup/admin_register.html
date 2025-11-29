@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+<head>
+<title>Admin Registration – MedTap</title>
+<link rel="stylesheet" href="/assets/style.css">
+<script src="/assets/otp.js"></script>
+
+<style>
+.form-card{max-width:600px;margin:40px auto;background:white;padding:30px;border-radius:18px;
+box-shadow:0 4px 22px rgba(0,0,0,0.08);}
+.input-row{margin-bottom:15px;}
+.otp-row{display:flex;gap:12px;}
+.otp-btn{background:#007aff;color:white;padding:10px 14px;border:none;border-radius:10px;}
+</style>
+</head>
+
+<body>
+
+<div class="navbar">
+ <div class="logo">MedTap — Admin</div>
+ <div class="nav-links"><a href="/login.html">Back</a></div>
+</div>
+
+<div class="form-card">
+ <h1>Admin Registration</h1>
+
+ <form onsubmit="return registerAdmin(event)">
+
+   <div class="input-row">
+     <label>Name</label>
+     <input id="name" required>
+   </div>
+
+   <div class="input-row">
+     <label>Mobile</label>
+     <div class="otp-row">
+       <input id="mobile" required>
+       <button type="button" class="otp-btn" onclick="sendOTP('mobile','otpStatus')">Send OTP</button>
+     </div>
+     <p id="otpStatus" class="status-text"></p>
+   </div>
+
+   <div class="input-row">
+     <label>Enter OTP</label>
+     <input id="otpInput" required>
+   </div>
+
+   <div class="input-row">
+     <label>Email</label>
+     <input id="email" type="email" required>
+   </div>
+
+   <div class="input-row">
+     <label>Password</label>
+     <input id="password" type="password" required>
+   </div>
+
+   <button class="btn-primary">Register Admin</button>
+
+ </form>
+</div>
+
+<script>
+function registerAdmin(event){
+  event.preventDefault();
+
+  if(!verifyOTP('otpInput','otpStatus')){
+    alert("OTP failed");
+    return false;
+  }
+
+  let admins = JSON.parse(localStorage.getItem("admins") || "[]");
+
+  admins.push({
+    name: document.getElementById("name").value,
+    mobile: document.getElementById("mobile").value,
+    email: document.getElementById("email").value,
+    password: document.getElementById("password").value
+  });
+
+  localStorage.setItem("admins", JSON.stringify(admins));
+
+  alert("Admin account created successfully!");
+  window.location.href = "/admin_login.html";
+}
+</script>
+
+</body>
+</html>

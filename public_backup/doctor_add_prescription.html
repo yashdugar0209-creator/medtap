@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Add Prescription – MedTap</title>
+  <link rel="stylesheet" href="/assets/style.css">
+  <style>
+      .med-row { display:flex; gap:12px; margin-bottom:10px; }
+      .remove-btn { background:#ff3b30!important; }
+  </style>
+</head>
+
+<body>
+
+<div class="navbar">
+  <div class="logo">MedTap — Doctor</div>
+  <div class="nav-links">
+    <a href="/doctor_dashboard.html">Dashboard</a>
+    <a href="/doctor_patient_search.html">Search</a>
+  </div>
+</div>
+
+<div class="container">
+  <h1>Add Prescription</h1>
+
+  <div class="card" style="max-width:700px;">
+    <form>
+
+      <label>Diagnosis</label>
+      <textarea rows="2"></textarea>
+
+      <h3>Medications</h3>
+
+      <div id="medBox">
+        <div class="med-row">
+          <input type="text" placeholder="Medicine Name">
+          <input type="text" placeholder="Dosage">
+          <button type="button" class="btn-secondary remove-btn" onclick="removeRow(this)">X</button>
+        </div>
+      </div>
+
+      <button type="button" class="btn-secondary" onclick="addMed()">+ Add Medicine</button>
+
+      <label>Additional Notes</label>
+      <textarea rows="3"></textarea>
+
+      <label>Follow-up Date</label>
+      <input type="date">
+
+      <button class="btn-primary" style="margin-top:18px;width:100%;">Submit Prescription</button>
+
+    </form>
+  </div>
+</div>
+
+<script>
+function addMed() {
+  let box = document.getElementById("medBox");
+  let div = document.createElement("div");
+  div.className = "med-row";
+  div.innerHTML = `
+    <input type="text" placeholder="Medicine Name">
+    <input type="text" placeholder="Dosage">
+    <button type="button" class="btn-secondary remove-btn" onclick="removeRow(this)">X</button>
+  `;
+  box.appendChild(div);
+}
+
+function removeRow(btn) {
+  btn.parentElement.remove();
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Hospital Login – MedTap</title>
+  <link rel="stylesheet" href="/assets/style.css">
+
+  <style>
+    .error { color:#ff3b30; text-align:center; margin-top:10px; display:none; }
+  </style>
+</head>
+
+<body>
+
+<div class="container center">
+  <h1>Hospital Login</h1>
+
+  <div class="card" style="max-width:380px;">
+    <form onsubmit="return hospitalLogin(event)">
+      
+      <label>Email</label>
+      <input id="email" type="email" required>
+
+      <label>Password</label>
+      <input id="password" type="password" required>
+
+      <button class="btn-primary" style="margin-top:10px;width:100%;">Login</button>
+
+      <p id="err" class="error">Invalid login</p>
+      <p id="pending" class="error" style="color:orange;">Your account is pending admin approval</p>
+    </form>
+
+    <p style="text-align:center;margin-top:10px;">
+      <a href="/hospital_register.html">Create account</a>
+    </p>
+  </div>
+</div>
+
+<script>
+function hospitalLogin(event){
+    event.preventDefault();
+
+    const email = document.getElementById("email").value.trim();
+    const pass = document.getElementById("password").value.trim();
+
+    let req = JSON.parse(localStorage.getItem("hospital_requests") || "[]");
+
+    const user = req.find(h => h.email === email && h.password === pass);
+
+    if(!user){
+        document.getElementById("err").style.display = "block";
+        document.getElementById("pending").style.display = "none";
+        return false;
+    }
+
+    if(!user.approved){
+        document.getElementById("pending").style.display = "block";
+        document.getElementById("err").style.display = "none";
+        return false;
+    }
+
+    // SUCCESS
+    localStorage.setItem("logged_hospital", JSON.stringify(user));
+    window.location.href = "/hospital_dashboard.html";
+}
+</script>
+
+</body>
+</html>

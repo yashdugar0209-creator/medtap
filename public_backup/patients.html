@@ -1,0 +1,21 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport"content="width=device-width,initial-scale=1"><title>Patients</title><link rel="stylesheet" href="/assets/style.css"></head>
+<body>
+  <div class="header"><div class="brand"><h1>MedTap</h1></div></div>
+  <div class="container">
+    <div class="card">
+      <h2>Patients</h2>
+      <table class="table" id="patientsTable"><thead><tr><th>ID</th><th>Token</th><th>Name</th><th>Phone</th></tr></thead><tbody></tbody></table>
+    </div>
+  </div>
+  <script>
+    fetch('/api/patients').then(r=>r.json()).then(rows=>{
+      const tbody = document.querySelector('#patientsTable tbody');
+      rows.forEach(rw=>{
+        const tr=document.createElement('tr');
+        tr.innerHTML=`<td>${rw.id}</td><td><a href="/patient.html?token=${encodeURIComponent(rw.token)}">${rw.token}</a></td><td>${rw.name}</td><td>${rw.mobile||''}</td>`;
+        tbody.appendChild(tr);
+      });
+    });
+  </script>
+</body></html>

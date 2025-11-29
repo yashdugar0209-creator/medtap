@@ -1,0 +1,68 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport"content="width=device-width,initial-scale=1"><title>Patient Dashboard</title><link rel="stylesheet" href="/assets/style.css"></head>
+<body>
+  <div class="header"><div class="brand"><h1>MedTap</h1></div><div style="padding:0 18px"><a href="/patient/logout">Logout</a></div></div>
+  <div class="container">
+    <div class="card" id="profile">Loading...</div>
+
+    <div class="card">
+      <h3>Link your token</h3>
+      <div style="display:flex;gap:8px">
+        <input id="linkToken" placeholder="TOKEN123">
+        <button class="btn" id="linkBtn">Link</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Upload report</h3>
+      <form id="uploadForm">
+        <input type="file" id="fileInput">
+        <div style="margin-top:8px"><button class="btn" type="submit">Upload</button></div>
+      </form>
+      <div id="uploadMsg" class="small"></div>
+    </div>
+  </div>
+
+<script>
+async function load(){
+  const r = await fetch('/api/patient/me');
+  if(!r.ok){ document.getElementById('profile').innerText = 'Not authenticated. Login.'; return; }
+  const j = await r.json();
+  const user = j.user;
+  const p = j.patient;
+  if(p) {
+    document.getElementById('profile').innerHTML = `<h2>${p.name}</h2><p class="small">Token: ${p.token}</p>`;
+    const list = document.createElement('ul');
+    (j.records||[]).forEach(rec => {
+      const li = document.createElement('li');
+      if(rec.file) li.innerHTML = `<strong>${rec.type}</strong> ${rec.title} — <a href="/download/patient/${p.id}/${rec.file}">Download</a>`;
+      else li.innerHTML = `<strong>${rec.type}</strong> ${rec.title} <div class="small">${rec.content||''}</div>`;
+      list.appendChild(li);
+    });
+    document.getElementById('profile').appendChild(list);
+  } else {
+    document.getElementById('profile').innerHTML = `<p class="small">No token linked. Link below to connect your card.</p>`;
+  }
+}
+document.getElementById('linkBtn').onclick = async () => {
+  const token = document.getElementById('linkToken').value.trim();
+  if(!token) return alert('Enter token');
+  const res = await fetch('/api/patient/link-token', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ token })});
+  const j = await res.json();
+  if(!res.ok) return alert(j.error || 'Failed to link');
+  alert('Linked: ' + j.token);
+  load();
+};
+document.getElementById('uploadForm').onsubmit = async e => {
+  e.preventDefault();
+  const f = document.getElementById('fileInput').files[0]; if(!f) return alert('Choose file');
+  const fd = new FormData(); fd.append('file', f);
+  const r = await fetch('/api/patient/upload', { method: 'POST', body: fd });
+  const j = await r.json();
+  if(!r.ok) return alert(j.error || 'Upload failed');
+  document.getElementById('uploadMsg').innerText = 'Uploaded: ' + j.file;
+  load();
+};
+load();
+</script>
+</body></html>

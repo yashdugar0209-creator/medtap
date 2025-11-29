@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Patients – MedTap</title>
+  <link rel="stylesheet" href="/assets/style.css">
+</head>
+
+<body>
+
+<div class="navbar">
+  <div class="logo">MedTap Hospital</div>
+  <div class="nav-links">
+    <a href="/hospital_dashboard.html">Dashboard</a>
+    <a class="active" href="/hospital_patients.html">Patients</a>
+    <a href="/hospital_doctors.html">Doctors</a>
+    <a href="/hospital_add_patient.html">Add Patient</a>
+  </div>
+</div>
+
+<div class="container">
+  <h1>Patients</h1>
+
+  <div class="card">
+    <label>Search Patient</label>
+    <input type="text" placeholder="Search by name or token">
+  </div>
+
+  <div class="card">
+    <table class="table">
+      <tr>
+        <th>Name</th>
+        <th>Token</th>
+        <th>Phone</th>
+        <th>Action</th>
+      </tr>
+
+      <tr>
+        <td>Rahul Patel</td>
+        <td>MT12345</td>
+        <td>9876543210</td>
+        <td><a href="/hospital_patient_profile.html" class="btn-secondary">View</a></td>
+      </tr>
+
+      <tr>
+        <td>Aarti Sharma</td>
+        <td>MT88771</td>
+        <td>9321001122</td>
+        <td><a href="/hospital_patient_profile.html" class="btn-secondary">View</a></td>
+      </tr>
+
+    </table>
+  </div>
+</div>
+
+</body>
+</html>
